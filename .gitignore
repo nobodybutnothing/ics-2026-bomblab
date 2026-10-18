@@ -10,6 +10,8 @@
 /tutor/phase0-answer.txt
 *.o
 __pycache__/
+# 本地分析产物（反汇编/答案导出）
+/analysis/
 /teaching/*
 !/teaching/*.c
 !/teaching/Makefile
