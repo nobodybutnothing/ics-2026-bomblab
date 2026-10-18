@@ -9,25 +9,34 @@
  * 把 values 中的 count 个整数写成一行“空格分隔的无符号十进制整数”，存入 out。
  * 成功返回 0；count 为 0（还没有实现）、snprintf 出错或结果被截断时返回非零。
  */
-static int write_answer(char *out, size_t cap, const uint32_t *values, size_t count) {
+static int write_answer(char *out, size_t cap, const uint32_t *values, size_t count)
+{
     size_t used = 0;
-    for (size_t i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i)
+    {
         int size = snprintf(out + used, cap - used, "%s%" PRIu32, i ? " " : "", values[i]);
-        if (size < 0 || (size_t)size >= cap - used) return 1;
+        if (size < 0 || (size_t)size >= cap - used)
+            return 1;
         used += (size_t)size;
     }
     return count == 0;
 }
 
-int solve_phase_1(uint64_t challenge, char *out, size_t cap) {
+int solve_phase_1(uint64_t challenge, char *out, size_t cap)
+{
     uint32_t values[MAX_FIELDS] = {0};
-    size_t count = 0;
-    (void)challenge;
-    // TODO: 根据 phase_01 的汇编，用 challenge 算出口令中的各个整数，依次存入 values，并把 count 改为整数个数。
+    uint32_t a = (uint32_t)(challenge >> 32);
+    uint32_t b = (uint32_t)(challenge >> 16);
+    uint32_t c = (uint32_t)challenge;
+    uint32_t t1 = (3u * a) ^ (b + 0x9f7fu);
+    uint32_t t0 = 3u * (c - a) + 0x74e0u;
+    values[0] = (3u * t0 + t1) ^ 0xd64fu;
+    size_t count = 1;
     return write_answer(out, cap, values, count);
 }
 
-int solve_phase_2(uint64_t challenge, char *out, size_t cap) {
+int solve_phase_2(uint64_t challenge, char *out, size_t cap)
+{
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
@@ -35,7 +44,8 @@ int solve_phase_2(uint64_t challenge, char *out, size_t cap) {
     return write_answer(out, cap, values, count);
 }
 
-int solve_phase_3(uint64_t challenge, char *out, size_t cap) {
+int solve_phase_3(uint64_t challenge, char *out, size_t cap)
+{
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
@@ -43,7 +53,8 @@ int solve_phase_3(uint64_t challenge, char *out, size_t cap) {
     return write_answer(out, cap, values, count);
 }
 
-int solve_phase_4(uint64_t challenge, char *out, size_t cap) {
+int solve_phase_4(uint64_t challenge, char *out, size_t cap)
+{
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
@@ -51,7 +62,8 @@ int solve_phase_4(uint64_t challenge, char *out, size_t cap) {
     return write_answer(out, cap, values, count);
 }
 
-int solve_phase_5(uint64_t challenge, char *out, size_t cap) {
+int solve_phase_5(uint64_t challenge, char *out, size_t cap)
+{
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
@@ -59,7 +71,8 @@ int solve_phase_5(uint64_t challenge, char *out, size_t cap) {
     return write_answer(out, cap, values, count);
 }
 
-int solve_phase_6(uint64_t challenge, char *out, size_t cap) {
+int solve_phase_6(uint64_t challenge, char *out, size_t cap)
+{
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
@@ -67,7 +80,8 @@ int solve_phase_6(uint64_t challenge, char *out, size_t cap) {
     return write_answer(out, cap, values, count);
 }
 
-int solve_secret(uint64_t challenge, uint64_t context, char *out, size_t cap) {
+int solve_secret(uint64_t challenge, uint64_t context, char *out, size_t cap)
+{
     (void)challenge;
     (void)context;
     (void)out;
