@@ -204,7 +204,7 @@ int solve_secret(uint64_t challenge, uint64_t context, char *out, size_t cap)
 {
     uint32_t A = (uint32_t)(challenge >> 32) ^ (uint32_t)challenge;
     uint32_t B = (uint32_t)(context >> 32) ^ (uint32_t)context;
-    uint32_t k = (uint32_t)context & 3u; /* = v0 */
+    uint32_t k = (uint32_t)context & 3u;
 
     uint32_t v0 = k;
     uint32_t r9 = (k * 0xc6dc) ^ (uint32_t)(context >> 16);
