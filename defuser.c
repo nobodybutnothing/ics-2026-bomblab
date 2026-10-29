@@ -195,13 +195,22 @@ int solve_phase_6(uint64_t challenge, char *out, size_t cap)
     return write_answer(out, cap, values, count);
 }
 
+static uint32_t secret_mix(uint32_t x)
+{
+    return ((x >> 3) ^ 0x4be7) + (x ^ 0xc6dc);
+}
+
 int solve_secret(uint64_t challenge, uint64_t context, char *out, size_t cap)
 {
-    (void)challenge;
-    (void)context;
-    (void)out;
-    (void)cap;
-    // TODO（选做）: 根据 secret_gate、secret_copy 和 secret_phase 的汇编构造完整的第七行，写入 out 后返回 0。
-    // 第七行不一定只有整数，可以直接用 snprintf 写入；还没完成时保持返回 1，测试会显示 not attempted。
-    return 1;
+    uint32_t A = (uint32_t)(challenge >> 32) ^ (uint32_t)challenge;
+    uint32_t B = (uint32_t)(context >> 32) ^ (uint32_t)context;
+    uint32_t k = (uint32_t)context & 3u; /* = v0 */
+
+    uint32_t v0 = k;
+    uint32_t r9 = (k * 0xc6dc) ^ (uint32_t)(context >> 16);
+    uint32_t v1 = secret_mix(A ^ B) ^ r9;
+    uint32_t v2 = v1 ^ (0x4be7 + B + k + (A >> 3));
+
+    int n = snprintf(out, cap, "%32sOPEN %u %u %u", "", v0, v1, v2);
+    return n < 0 || (size_t)n >= cap;
 }
