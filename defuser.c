@@ -163,12 +163,35 @@ int solve_phase_5(uint64_t challenge, char *out, size_t cap)
     return write_answer(out, cap, values, count);
 }
 
+static uint32_t rol32(uint32_t v, int n) { return (v << n) | (v >> (32 - n)); }
+static uint32_t ror32(uint32_t v, int n) { return (v >> n) | (v << (32 - n)); }
+
+static uint32_t p6_op_0(uint32_t x) { return rol32(x, 7) ^ 0x8050u; }
+static uint32_t p6_op_1(uint32_t x) { return (x * 8u + 0x7ac4u) ^ (5u * x); }
+static uint32_t p6_op_2(uint32_t x) { return ror32(x, 3); }
+static uint32_t p6_op_3(uint32_t x) { return (x ^ 0x3699u) + (x << 5); }
+static uint32_t p6_op_4(uint32_t x) { return ((x >> 3) ^ x) + 0xa748u; }
+static uint32_t p6_op_5(uint32_t x) { return (x + 0x64d7u) ^ (x >> 5); }
+
+static uint32_t (*const p6_ops[8])(uint32_t) = {
+    p6_op_2,
+    p6_op_3,
+    p6_op_4,
+    p6_op_1,
+    p6_op_0,
+    p6_op_1,
+    p6_op_0,
+    p6_op_5,
+};
+
 int solve_phase_6(uint64_t challenge, char *out, size_t cap)
 {
     uint32_t values[MAX_FIELDS] = {0};
-    size_t count = 0;
-    (void)challenge;
-    // TODO: 根据 phase_06 的汇编，用 challenge 算出口令中的各个整数，依次存入 values，并把 count 改为整数个数。
+    size_t count = 1;
+    uint32_t x = (uint32_t)(challenge >> 6) ^ (uint32_t)(challenge >> 32);
+    uint32_t r1 = p6_ops[challenge & 7](x);
+    uint32_t r2 = p6_ops[(challenge >> 3) & 7](r1 ^ 0x7786);
+    values[0] = r2 + 0x5bbe;
     return write_answer(out, cap, values, count);
 }
 
